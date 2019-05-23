@@ -23,12 +23,6 @@ ENV JAVA_ALPINE_VERSION 8.111.14-r0
 
 RUN set -x && apk add --no-cache openjdk8 && [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
-#RUN apk update && apk add mysql-client
-#ENV MYSQL_USER admin
-#ENV MYSQL_PASSWORD welcome1
-#ENV MYSQL_DATABASE druid
-
-#RUN apk add postgresql=10.8-r0
 RUN apk add postgresql && apk add postgresql-client
 RUN (addgroup -S postgres && adduser -S postgres -G postgres || true)
 RUN mkdir -p /var/lib/postgresql/data
@@ -48,13 +42,12 @@ COPY ./conf/zookeeper/zoo.cfg /zookeeper-3.4.14/conf
 COPY ./file/apache-druid-0.14.1-incubating-bin.tar.gz /apache-druid-0.14.1-incubating-bin.tar.gz
 RUN tar -xzf /apache-druid-0.14.1-incubating-bin.tar.gz
 
-COPY ./conf/druid/_common/common.runtime.properties /apache-druid-0.14.1-incubating/conf/druid/_common/common.runtime.properties
+COPY ./conf/druid/master/_common/common.runtime.properties /apache-druid-0.14.1-incubating/conf/druid/_common/common.runtime.properties
 COPY ./file/postgresql-metadata-storage /apache-druid-0.14.1-incubating/extensions/postgresql-metadata-storage
 
 RUN rm -rf *.tar.gz
 
-COPY ./script/zookeeper/start.sh /start.sh
-COPY ./script/postgres/run.sh /run.sh
+COPY ./script/masterserver/start.sh /start.sh
 
 RUN set -ex && apk --no-cache add sudo
 
@@ -65,6 +58,5 @@ EXPOSE 8081
 EXPOSE 8090
 
 RUN chmod +x /start.sh
-RUN chmod +x /run.sh
 
 CMD ["/start.sh"]
