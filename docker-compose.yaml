@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+    druidmaster:
+        build:
+            context: ./src
+            dockerfile: MasterServer.Dockerfile
+        restart: always
+        environment:
+          POSTGRES_PASSWORD: welcome1
+          POSTGRES_DB: druid
+          POSTGRES_USER: postgres
+          POSTGRES_INITDB_ARGS: "-A md5"
+          PGDATA: /var/lib/postgresql/data
+        ports:
+          - 5432:5432
+          - 1527:1527
+          - 2181:2181
+          - 8081:8081
+          - 8090:8090
+
+    druiddata1:
+        build:
+            context: ./src
+            dockerfile: DataServer.Dockerfile
+        ports:
+          - 8083:8083
+          - 8091:8091
+
+    druiddata2:
+        build:
+            context: ./src
+            dockerfile: DataServer.Dockerfile
+        ports:
+          - 8183:8083
+          - 8191:8091
+
+    druidquery:
+        build:
+            context: ./src
+            dockerfile: QueryServer.Dockerfile
+        ports:
+          - 8082:8082
+          - 8088:8088

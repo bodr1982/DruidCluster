@@ -17,3 +17,7 @@ docker run -t bodr1982/druid_data
 docker build -f QueryServer.Dockerfile -t bodr1982/druid_query .
 docker push bodr1982/druid_query
 docker run -t bodr1982/druid_query
+
+
+Docker compose:
+docker-compose up -d druidmaster druiddata1 druiddata2 druidquery
